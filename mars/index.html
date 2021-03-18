@@ -13,16 +13,6 @@
         height: 100%;
         width: 100%;
       }
-      #uploadForm {
-        position: absolute;
-        font-size: 0.8em;
-        font-family: monospace, sans-serif;
-        top: 15px;
-        left: 60px;
-        background: #242424;
-        padding: 6px;
-        color: #69dcff;
-      }    
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css" />
@@ -36,7 +26,8 @@
         "esri/layers/ElevationLayer",
         "esri/layers/TileLayer",
         "esri/layers/FeatureLayer",
-        "esri/widgets/LayerList"
+        "esri/widgets/LayerList",
+        "dojo/domReady!" // will not be called until DOM is ready
       ], function (esriConfig, Map, SceneView, ElevationLayer, TileLayer, FeatureLayer, LayerList) {
 
         esriConfig.apiKey = "AAPK241a4d654f654b78b375d8259b6c98b1YXZaHuI6I_71tr8-9pB0GNlJbxOQxTaK5kM7cxZAGooexraTh8txdzY8tnmPl6pn";        
@@ -174,10 +165,20 @@
 
         map.add(marsImageryHiRISE);
 
+        const jezeroNiliFeatures = new FeatureLayer({
+          url:
+            "https://services7.arcgis.com/tGYdLctJGSdg4aUY/arcgis/rest/services/sim3464_JezeroNili_FINAL/FeatureServer",
+            title: "Jezero Nili Geol. Combo",
+          copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
+          visible: false
+        });
+
+        map.add(jezeroNiliFeatures);
+
         const jezeroNiliTiles = new TileLayer({
           url:
             "https://tiles.arcgis.com/tiles/v01gqwM5QqNysAAi/arcgis/rest/services/Nili_CTX_Mosaic_Beta01_Feb2018_MTM_tif_NEWTILING5/MapServer",
-            title: "Jezero Nili Tiles",
+            title: "Jezero Nili Geol. Tiles",
           copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
           visible: false
         });
@@ -187,7 +188,7 @@
         const JezeroGeolUnits = new TileLayer({
           url:
             "https://tiles.arcgis.com/tiles/v01gqwM5QqNysAAi/arcgis/rest/services/JezeroGeoUnitsAnno_WebTile2/MapServer",
-            title: "Jezero Geol. Units",
+            title: "Jezero Nili Geol. Units",
           copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
           visible: false
         });
@@ -198,16 +199,16 @@
           url:
             "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer",
             definitionExpression: "name = 'Geologic Contacts'",
-            title: "Geologic Contacts",
+            title: "Jezero Nili Geol. Contacts",
           copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
-            title: "Geologic Contacts",
+            title: "Jezero Nili Geol. Contacts",
             renderer: {
             type: "simple",
             symbol: {
-              type: "esriSFS",
+              type: "polygin-3D",
               symbolLayers: [
                 {
-                  type: "esrSFS",
+                  type: "polygin-3D",
                   material: { color: [130, 130, 130, 0] },
                   outline: {
                     color: [0, 0, 0, 255],
@@ -229,58 +230,6 @@
         view.ui.add(layerList, {
             position: "top-right"
           });    
-
-        const uploadForm = document.getElementById("uploadForm");
-
-        uploadForm.addEventListener("change", function (event) {
-          const filePath = event.target.value.toLowerCase();
-          //only accept .zip files
-          if (filePath.indexOf(".zip") !== -1) {
-              generateFeatureCollection(uploadForm)
-          } 
-        });     
-        function generateFeatureCollection(uploadFormNode) {
-          const generateRequestParams = {
-            filetype: "shapefile",
-              publishParameters: JSON.stringify({
-              targetSR: view.spatialReference
-            }),
-            f: "json"
-          };
-          request("https://www.arcgis.com/sharing/rest/content/features/generate", {
-            query: generateRequestParams,
-            body: uploadFormNode,
-            responseType: "json"
-          }).then(function (response) {
-            addShapefileToMap(response.data.featureCollection);
-            console.log(response)
-            })
-          }
-        function createFeaturesGraphics(layer) {
-          console.log(layer)
-          return layer.featureSet.features.map(function (feature) {
-            return Graphic.fromJSON(feature);
-          });
-        }
-        function createFeatureLayerFromGraphic(graphics) {
-          return new FeatureLayer({
-            objectIdField: "FID",
-            source: graphics,
-            title: 'User uploaded shapefile'
-          });
-        }  
-        function addShapefileToMap(featureCollection) {
-          let sourceGraphics = [];
-          const collectionLayers = featureCollection.layers;
-          const mapLayers = collectionLayers.map(function (layer) {
-            const graphics = createFeaturesGraphics(layer);
-            sourceGraphics = sourceGraphics.concat(graphics);
-            const featureLayer = createFeatureLayerFromGraphic(graphics)
-            return featureLayer;
-          });
-          map.addMany(mapLayers);
-          view.goTo({target: sourceGraphics, tilt: 40});
-        }           
 
       });
     </script>
