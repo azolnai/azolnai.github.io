@@ -25,8 +25,9 @@
         "esri/layers/ElevationLayer",
         "esri/layers/TileLayer",
         "esri/layers/FeatureLayer",
+        "esri/layers/GroupLayer",
         "esri/widgets/LayerList"
-      ], function (Map, SceneView, ElevationLayer, TileLayer, FeatureLayer, LayerList) {
+      ], function (Map, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList) {
 
         const marsElevation = new ElevationLayer({
           url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDEM200M/ImageServer",
@@ -155,16 +156,17 @@
 
         map.add(marsImageryHiRISE);
               
-        const jezeroNiliGeology = new FeatureLayer({
+        const jezeroNiliGeology = new GroupLayer({
           url:
             "https://services5.arcgis.com/0cdFOdQ7VcrIdCxr/arcgis/rest/services/sim3464_JezeroNili_FINAL/FeatureServer",
             title: "Jezero Nili Geology",
           copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
+          layers: [LocationFeatures, LinearFeatures, GeoContacts, SurfaceFeatures, GeoUnits_v1]
           visible: false
         });
 
         map.add(jezeroNiliGeology);
-        
+
         const layerList = new LayerList({
           view
         });
