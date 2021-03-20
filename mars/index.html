@@ -12,7 +12,7 @@
         margin: 0;
         height: 100%;
         width: 100%;
-      }
+      }    
     </style>
 
     <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css" />
@@ -20,23 +20,17 @@
 
     <script>
       require([
-        "esri/config",
         "esri/Map",
         "esri/views/SceneView",
         "esri/layers/ElevationLayer",
         "esri/layers/TileLayer",
         "esri/layers/FeatureLayer",
-        "esri/widgets/LayerList",
-        "dojo/domReady!" // will not be called until DOM is ready
-      ], function (esriConfig, Map, SceneView, ElevationLayer, TileLayer, FeatureLayer, LayerList) {
-
-        esriConfig.apiKey = "AAPK241a4d654f654b78b375d8259b6c98b1YXZaHuI6I_71tr8-9pB0GNlJbxOQxTaK5kM7cxZAGooexraTh8txdzY8tnmPl6pn";        
+        "esri/widgets/LayerList"
+      ], function (Map, SceneView, ElevationLayer, TileLayer, FeatureLayer, LayerList) {
 
         const marsElevation = new ElevationLayer({
-          url:
-            "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDEM200M/ImageServer",
-          copyright:
-            "NASA, ESA, HRSC, Goddard Space Flight Center, USGS Astrogeology Science Center, Esri"
+          url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDEM200M/ImageServer",
+          copyright: "NASA, ESA, HRSC, Goddard Space Flight Center, USGS Astrogeology Science Center, Esri"
         });
 
         const marsImageryCTX = new TileLayer({
@@ -46,7 +40,7 @@
           copyright: "USGS Astrogeology Science Center, NASA, JPL, Esri"
         });
 
-       const map = new Map({
+        const map = new Map({
           ground: {
             layers: [marsElevation]
           },
@@ -57,17 +51,13 @@
           map: map,
           container: "viewDiv",
           qualityProfile: "high",
-          // setting the spatial reference for Mars_2000 coordinate system
-          spatialReference: {
-            wkid: 104971
-          },
+          spatialReference: { wkid: 104971 },
           camera: {
             position: {
               x: 77.5000,
               y: 18.5000,
               z: 8000.000,
-              spatialReference: 104971
-            },
+              spatialReference: 104971 },
             heading: -90.00,
             tilt: 37.12
           }
@@ -164,86 +154,28 @@
         });
 
         map.add(marsImageryHiRISE);
-
-        const jezeroNiliFeatures = new FeatureLayer({
+              
+        const jezeroNiliGeology = new FeatureLayer({
           url:
-            "https://services7.arcgis.com/tGYdLctJGSdg4aUY/arcgis/rest/services/sim3464_JezeroNili_FINAL/FeatureServer",
-            title: "Jezero Nili Geol. Combo",
+            "https://services5.arcgis.com/0cdFOdQ7VcrIdCxr/arcgis/rest/services/sim3464_JezeroNili_FINAL/FeatureServer",
+            title: "Jezero Nili Geology",
           copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
           visible: false
         });
 
-        map.add(jezeroNiliFeatures);
-
-        const jezeroNiliTiles = new TileLayer({
-          url:
-            "https://tiles.arcgis.com/tiles/v01gqwM5QqNysAAi/arcgis/rest/services/Nili_CTX_Mosaic_Beta01_Feb2018_MTM_tif_NEWTILING5/MapServer",
-            title: "Jezero Nili Geol. Tiles",
-          copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
-          visible: false
-        });
-
-        map.add(jezeroNiliTiles);
-
-        const JezeroGeolUnits = new TileLayer({
-          url:
-            "https://tiles.arcgis.com/tiles/v01gqwM5QqNysAAi/arcgis/rest/services/JezeroGeoUnitsAnno_WebTile2/MapServer",
-            title: "Jezero Nili Geol. Units",
-          copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
-          visible: false
-        });
-
-        map.add(JezeroGeolUnits);
-
-        const JezeroGeology = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer",
-            definitionExpression: "name = 'Geologic Contacts'",
-            title: "Jezero Nili Geol. Contacts",
-          copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
-            title: "Jezero Nili Geol. Contacts",
-            renderer: {
-            type: "simple",
-            symbol: {
-              type: "polygin-3D",
-              symbolLayers: [
-                {
-                  type: "polygin-3D",
-                  material: { color: [130, 130, 130, 0] },
-                  outline: {
-                    color: [0, 0, 0, 255],
-                    size: 2
-                  }
-                }
-              ]
-            }
-          },
-          visible: false
-        });
-
-        map.add(JezeroGeology);
-
+        map.add(jezeroNiliGeology);
+        
         const layerList = new LayerList({
           view
         });
 
-        view.ui.add(layerList, {
-            position: "top-right"
-          });    
-
+        view.ui.add(layerList, "top-right");
       });
+
     </script>
   </head>
 
   <body>
     <div id="viewDiv"></div>
-    <form enctype="multipart/form-data" method="post" id="uploadForm">
-      <div class="field">
-          <label class="file-upload">
-            <span><strong>Upload shapefile .zip</strong></span>
-            <input type="file" name="file" id="inFile" />
-          </label>
-        </div>
-  </form>    
-</body>
+  </body>
 </html>
