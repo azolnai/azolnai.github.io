@@ -29,8 +29,9 @@
         "esri/layers/FeatureLayer",
         "esri/layers/GroupLayer",
         "esri/widgets/LayerList",
-        "esri/widgets/Legend"
-      ], function (Map, esriConfig, WebMap, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList, Legend) {
+        "esri/widgets/Legend",
+        "esri/widgets/Search"
+      ], function (Map, esriConfig, WebMap, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList, Legend, Search) {
 
         esriConfig.apiKey = "AAPK241a4d654f654b78b375d8259b6c98b1YXZaHuI6I_71tr8-9pB0GNlJbxOQxTaK5kM7cxZAGooexraTh8txdzY8tnmPl6pn";
 
@@ -50,7 +51,7 @@
             title: "Jezero Crater & Nili Planum",
           copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
           portalItem: {
-          id: "137eebf467514082a27c03c88b5ffe58"
+          id: "137eebf467514082a27c03c88b5ffe58",
           },
           ground: {
             layers: [marsElevation]
@@ -59,19 +60,19 @@
         });
 
         const view = new SceneView({
-            map: webmap, 
+            map: webmap,
           container: "viewDiv",
           qualityProfile: "high",
           spatialReference: { wkid: 104971 },
           camera: {
             position: {
-              x: 77.5000,
+              x: 77.7500,
               y: 18.5000,
-              z: 8000.000,
+              z: 25000.000,
               spatialReference: 104971 },
             heading: -90.00,
-            tilt: 37.12
-          }
+            tilt: 37.12,
+          },
         });
 
         const cratersLayer = new FeatureLayer({
@@ -134,8 +135,6 @@
           ]
         });
 
-        webmap.add(cratersLayer);
-
         const shadedReliefLayer = new TileLayer({
           url:
             "https://astro.arcgis.com/arcgis/rest/services/OnMars/MColorDEM/MapServer",
@@ -143,8 +142,6 @@
           title: "Shaded relief",
           visible: false
         });
-
-        webmap.add(shadedReliefLayer);
 
         const marsImageryMDIM = new TileLayer({
           url:
@@ -154,8 +151,6 @@
           visible: false
         });
 
-        webmap.add(marsImageryMDIM);
-
         const marsImageryHiRISE = new TileLayer({
           url:
             "https://astro.arcgis.com/arcgis/rest/services/OnMars/HiRISE/MapServer",
@@ -164,8 +159,15 @@
           visible: false
         });
 
-        webmap.add(marsImageryHiRISE);
-              
+        const ImageryAll = new GroupLayer({
+          title: "NASA Imagery",
+          copyright: "USGS Astrogeology Science Center, NASA, JPL, Esri",
+           layers: [cratersLayer, shadedReliefLayer, marsImageryMDIM, marsImageryHiRISE],
+          visible: true
+        });
+
+        webmap.add(ImageryAll);
+            
         const layerList = new LayerList({
         view: view,
         listItemCreatedFunction: function(event) {
@@ -173,14 +175,17 @@
           if (item.layer.type != "group") {
             item.panel = {
               content: "legend",
-              open: true
+              open: false
             };
           }
         }
       });
 
-      view.ui.add(layerList, "top-right");
-          });
+      setTimeout(function(){
+        view.ui.add(layerList, "top-right");
+        layerList.operationalItems.reverse();
+        }, 20000);
+      })
 
     </script>
   </head>
