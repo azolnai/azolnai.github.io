@@ -21,13 +21,18 @@
     <script>
       require([
         "esri/Map",
+        "esri/config",
+        "esri/WebMap",
         "esri/views/SceneView",
         "esri/layers/ElevationLayer",
         "esri/layers/TileLayer",
         "esri/layers/FeatureLayer",
         "esri/layers/GroupLayer",
-        "esri/widgets/LayerList"
-      ], function (Map, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList) {
+        "esri/widgets/LayerList",
+        "esri/widgets/Legend"
+      ], function (Map, esriConfig, WebMap, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList, Legend) {
+
+        esriConfig.apiKey = "AAPK241a4d654f654b78b375d8259b6c98b1YXZaHuI6I_71tr8-9pB0GNlJbxOQxTaK5kM7cxZAGooexraTh8txdzY8tnmPl6pn";
 
         const marsElevation = new ElevationLayer({
           url: "https://astro.arcgis.com/arcgis/rest/services/OnMars/MDEM200M/ImageServer",
@@ -41,7 +46,12 @@
           copyright: "USGS Astrogeology Science Center, NASA, JPL, Esri"
         });
 
-        const map = new Map({
+        const webmap = new WebMap({
+            title: "Jezero Crater & Nili Planum",
+          copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
+          portalItem: {
+          id: "137eebf467514082a27c03c88b5ffe58"
+          },
           ground: {
             layers: [marsElevation]
           },
@@ -49,7 +59,7 @@
         });
 
         const view = new SceneView({
-          map: map,
+            map: webmap, 
           container: "viewDiv",
           qualityProfile: "high",
           spatialReference: { wkid: 104971 },
@@ -124,7 +134,7 @@
           ]
         });
 
-        map.add(cratersLayer);
+        webmap.add(cratersLayer);
 
         const shadedReliefLayer = new TileLayer({
           url:
@@ -134,7 +144,7 @@
           visible: false
         });
 
-        map.add(shadedReliefLayer);
+        webmap.add(shadedReliefLayer);
 
         const marsImageryMDIM = new TileLayer({
           url:
@@ -144,7 +154,7 @@
           visible: false
         });
 
-        map.add(marsImageryMDIM);
+        webmap.add(marsImageryMDIM);
 
         const marsImageryHiRISE = new TileLayer({
           url:
@@ -154,169 +164,20 @@
           visible: false
         });
 
-        map.add(marsImageryHiRISE);
+        webmap.add(marsImageryHiRISE);
               
-        const LandingEllipse = new FeatureLayer({
-          portalItem: "b602bd9a573d447eb07388e5fb9ca884",
-          definitionExpression: "type = 'LandingEllipse'",
-          title: "Landing Ellipse",
-          });
-
-          const LocationFeatures = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/4",
-          definitionExpression: "type = 'LocationFeatures'",
-          title: "Location Features",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "esriSFS",
-              symbolLayers: [
-                {
-                  type: "esriSFS",
-                  style: "esriSFSSolid",
-                  material: { color: [130,130,130,0] },
-                  outline: {
-                    type: "esriSLS",
-                    style: "esriSFSSolid",
-                    color: [0,0,0,255],
-                    width: 1
-                  }
-                }
-              ],
-              scaleSymbols: true,
-              transparency: 0,
-              labelingInfo: null}
-            }
-          });
-
-        const GeoContacts = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/5",
-          definitionExpression: "type = 'GeoContacts'",
-          title: "Geologic Contacts",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "esriSFS",
-              symbolLayers: [
-                {
-                  type: "esriSFS",
-                  style: "esriSFSSolid",
-                  material: { color: [130,130,130,0] },
-                  outline: {
-                    type: "esriSLS",
-                    style: "esriSFSSolid",
-                    color: [0,0,0,255],
-                    width: 1
-                  }
-                }
-              ],
-              scaleSymbols: true,
-              transparency: 0,
-              labelingInfo: null}
-            }
-          });
-        
-        const LinearFeatures = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/6",
-          definitionExpression: "type = 'LinearFeatures'",
-          title: "Linear Features",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "esriSFS",
-              symbolLayers: [
-                {
-                  type: "esriSFS",
-                  style: "esriSFSSolid",
-                  material: { color: [130,130,130,0] },
-                  outline: {
-                    type: "esriSLS",
-                    style: "esriSFSSolid",
-                    color: [0,0,0,255],
-                    width: 1
-                  }
-                }
-              ],
-              scaleSymbols: true,
-              transparency: 0,
-              labelingInfo: null}
-            }
-          });
-        
-        const SurfaceFeatures = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/7",
-          definitionExpression: "type = 'SurfaceFeatures'",
-          title: "Surface Features",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "esriSFS",
-              symbolLayers: [
-                {
-                  type: "esriSFS",
-                  style: "esriSFSSolid",
-                  material: { color: [130,130,130,0] },
-                  outline: {
-                    type: "esriSLS",
-                    style: "esriSFSSolid",
-                    color: [0,0,0,255],
-                    width: 1
-                  }
-                }
-              ],
-              scaleSymbols: true,
-              transparency: 0,
-              labelingInfo: null}
-            }
-          });
-        
-        const GeoUnits_v1 = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/8",
-          definitionExpression: "type = 'GeoUnits_v1'",
-          title: "Geologic Units v.1",
-          renderer: {
-            type: "simple",
-            symbol: {
-              type: "esriSFS",
-              symbolLayers: [
-                {
-                  type: "esriSFS",
-                  style: "esriSFSSolid",
-                  material: { color: [130,130,130,0] },
-                  outline: {
-                    type: "esriSLS",
-                    style: "esriSFSSolid",
-                    color: [0,0,0,255],
-                    width: 1
-                  }
-                }
-              ],
-              scaleSymbols: true,
-              transparency: 0,
-              labelingInfo: null}
-            }
-          });
-        
-        const jezeroNiliGeology = new GroupLayer({
-          title: "Jezero Crater & Nili Planum",
-          copyright: "Geologic Map of Jezero Crater and the Nili Planum Region, Mars, 1:75,000. Sun and Stack (2020)",
-          layers: [LocationFeatures, GeoContacts, LinearFeatures, SurfaceFeatures, GeoUnits_v1],
-          visible: false
-        });
-
-        map.add(jezeroNiliGeology);
-
         const layerList = new LayerList({
           view
         });
 
         view.ui.add(layerList, "top-right");
-      });
+          });
+
+        const legend = new Legend ({
+            view
+        });
+
+      view.ui.add(legend, "bottom-left");
 
     </script>
   </head>
