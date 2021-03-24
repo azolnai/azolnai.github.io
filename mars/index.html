@@ -133,6 +133,23 @@
           ]
         });
 
+        const searchWidget = new Search({
+          view: view,
+          sources: [
+              {
+                layer: cratersLayer,
+                searchFields: ["name", "clean_name"],
+                name: "Mars_Nomenclature_March2019_buffer",
+                zoomScale: 500000
+                },
+          ],
+          includeDefaultSources: function(sourcesResponse) {
+            return sourcesResponse.defaultSources;
+          } 
+        });
+
+        view.ui.add(searchWidget, "bottom-right");
+
         const shadedReliefLayer = new TileLayer({
           url:
             "https://astro.arcgis.com/arcgis/rest/services/OnMars/MColorDEM/MapServer",
