@@ -64,12 +64,13 @@
           spatialReference: { wkid: 104971 },
           camera: {
             position: {
-              x: 77.7500,
-              y: 18.5000,
-              z: 25000.000,
-              spatialReference: 104971 },
-            heading: -90.00,
-            tilt: 37.12,
+              x: 27.63423,
+              y: -6.34466,
+              z: 1281525.766,
+              spatialReference: 104971
+            },
+            heading: 332.28,
+            tilt: 37.12
           },
         });
 
@@ -135,7 +136,6 @@
 
         const searchWidget = new Search({
           view: view,
-          allPlaceholder: "Crater or Location",
           locationEnabled: false,
           sources: [
               {
@@ -143,14 +143,11 @@
                 searchFields: ["name", "clean_name"],
                 name: "Mars_Nomenclature_March2019_buffer",
                 exactMatch: false,
-                placeholder: "Crater",
-                zoomScale: 50000
+                 zoomScale: 50000
                 },
           ],
-          includeDefaultSources: function(sourcesResponse) {
-            return sourcesResponse.defaultSources;
           } 
-        });
+        );
 
         view.ui.add(searchWidget, {
           position: "top-left",
