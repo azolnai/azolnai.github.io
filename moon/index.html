@@ -85,9 +85,11 @@
           portalItem: {
           id: "f763cfb37a214e4c9be3708093edc3c3",
           },
+          title: "Craters - Search these",
         });
 
         const searchWidget = new Search({
+          placeholder: "Search Crater",
           view: view,
           locationEnabled: false,
           sources: [
@@ -112,6 +114,7 @@
          portalItem: {
           id: "e2a39347eb264fc1a56c78972284950b",
           },
+          title: "Moon Geology",
           visible: false
         });
 
@@ -159,7 +162,6 @@
           title: "Moon Features",
           copyright: "Esri, Graduate_MediaMaps, NASA, USGS",
            layers: [cratersLayer, moonGeology, largeScaleFeat, manMadeFeat, moonEVA, apollo11Image, apollo11HiRes],
-          visible: true
         });
 
         map.add(ImageryAll);
