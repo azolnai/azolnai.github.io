@@ -21,17 +21,16 @@
     <script>
       require([
         "esri/Map",
-        "esri/config",
         "esri/WebScene",
         "esri/views/SceneView",
         "esri/layers/ElevationLayer",
         "esri/layers/TileLayer",
         "esri/layers/FeatureLayer",
-        "esri/layers/GroupLayer",
         "esri/widgets/LayerList",
+        "esri/widgets/Home",
         "esri/widgets/Legend",
         "esri/widgets/Search"
-      ], function (Map, esriConfig, WebScene, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList, Legend, Search) {
+      ], function (Map, WebScene, SceneView, ElevationLayer, TileLayer, FeatureLayer, LayerList, Home, Legend, Search) {
 
         const webmap = new WebScene({
             title: "Moon Media Map",
@@ -128,7 +127,13 @@
         view.ui.add(layerList, "top-right");
         layerList.operationalItems.reverse();
         }, 20000);
-      })
+
+        var homeBtn = new Home({
+          view: view
+        });
+
+       view.ui.add(homeBtn, "top-left");
+      });
 
     </script>
   </head>
