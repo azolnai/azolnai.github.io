@@ -22,7 +22,7 @@
       require([
         "esri/Map",
         "esri/config",
-        "esri/WebMap",
+        "esri/WebScene",
         "esri/views/SceneView",
         "esri/layers/ElevationLayer",
         "esri/layers/TileLayer",
@@ -31,32 +31,18 @@
         "esri/widgets/LayerList",
         "esri/widgets/Legend",
         "esri/widgets/Search"
-      ], function (Map, esriConfig, WebMap, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList, Legend, Search) {
+      ], function (Map, esriConfig, WebScene, SceneView, ElevationLayer, TileLayer, FeatureLayer, GroupLayer, LayerList, Legend, Search) {
 
-        const moonElevation = new ElevationLayer({
-          url: 
-           "https://tiles.arcgis.com/tiles/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/Moon_Elevation_Surface/ImageServer",
-          copyright: "Esri, Graduate_MediaMaps, Moon elevation profile. 4 X, NASA"
-        });
-
-        const moonImagery = new TileLayer({
-          url:
-            "https://tiles.arcgis.com/tiles/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/Moon_Basemap_Tile0to9/MapServer",
-            title: "Moon Imagery",
-          copyright: "Esri, Graduate_MediaMaps, LOLA Global 118m DEM, NASA"
-        });
-
-        const map = new Map({
-//        const webmap = new WebMap({
-          ground: {
-            layers: [moonElevation]
+        const webmap = new WebScene({
+            title: "Moon Media Map",
+          copyright: "History of the Lunar Landings web application, Graduate_MediaMaps",
+          portalItem: {
+          id: "4a83ac002c0549c5a953906e6389945b",
           },
-          layers: [moonImagery],
         });
 
         const view = new SceneView({
-          map: map,
-//          map: webmap,
+          map: webmap,
           container: "viewDiv",
           qualityProfile: "high",
           spatialReference: {
@@ -71,25 +57,25 @@
               y: -6.34466,
               z: 2500000,
 //              spatialReference: 4326
-//              spatialReference: 3857
-              spatialReference: 102100
+              spatialReference: 3857
+//              spatialReference: 102100
 //              spatialReference: 104903
             },
             heading: 332.28,
             tilt: 37.12
-          }
+          },
         });
 
         const cratersLayer = new FeatureLayer({
-            copyright: "Lunar Craters, USGS",
           portalItem: {
           id: "f763cfb37a214e4c9be3708093edc3c3",
           },
-          title: "Craters - Search these",
+
         });
 
+        webmap.add(cratersLayer);
+
         const searchWidget = new Search({
-          placeholder: "Search Crater",
           view: view,
           locationEnabled: false,
           sources: [
@@ -114,58 +100,10 @@
          portalItem: {
           id: "e2a39347eb264fc1a56c78972284950b",
           },
-          title: "Moon Geology",
-          visible: false
+          title: "Geology (turn off Imagery)",
         });
 
-        const largeScaleFeat = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/MOON_Nomenculture/FeatureServer",
-          copyright: "Esri, Graduate_MediaMaps, NASA",
-          title: "Large-scale Features",
-          visible: false
-        });
-
-        const manMadeFeat = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/Man_made_objects_All/FeatureServer",
-          copyright: "Esri, Graduate_MediaMaps, NASA",
-          title: "Man-made Objects",
-          visible: false
-        });
-
-        const moonEVA = new FeatureLayer({
-          url:
-            "https://services.arcgis.com/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/MoonEVA/FeatureServer",
-          copyright: "Esri, Graduate_MediaMaps, NASA",
-          title: "Moon EVA",
-          visible: false
-        });
-
-        const apollo11Image = new TileLayer({
-          url:
-            "https://tiles.arcgis.com/tiles/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/Apollo11_Landing_imageryV4/MapServer",
-          copyright: "Esri, Graduate_MediaMaps, NASA",
-          title: "Apollo 11 Landing Image",
-          visible: false
-        });
-
-        const apollo11HiRes = new TileLayer({
-          url: 
-            "https://tiles.arcgis.com/tiles/WQ9KVmV6xGGMnCiQ/arcgis/rest/services/Apollo_Hires_Landing/MapServer",
-          copyright: "Esri, Graduate_MediaMaps, NASA",
-          title: "Landing Image Hi Res.",
-          visible: false
-        });
-
-        const ImageryAll = new GroupLayer({
-          title: "Moon Features",
-          copyright: "Esri, Graduate_MediaMaps, NASA, USGS",
-           layers: [cratersLayer, moonGeology, largeScaleFeat, manMadeFeat, moonEVA, apollo11Image, apollo11HiRes],
-        });
-
-        map.add(ImageryAll);
-//        webmap.add(ImageryAll);
+        webmap.add(moonGeology);
         
         const layerList = new LayerList({
         view: view,
@@ -180,8 +118,11 @@
         }
       });
 
-    view.ui.add(layerList, "top-right");
-    })
+      setTimeout(function(){
+        view.ui.add(layerList, "top-right");
+        layerList.operationalItems.reverse();
+        }, 20000);
+      })
 
     </script>
   </head>
