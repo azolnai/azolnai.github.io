@@ -20,6 +20,7 @@
 
     <script>
       require([
+      require([
         "esri/Map",
         "esri/config",
         "esri/WebScene",
@@ -46,31 +47,34 @@
           container: "viewDiv",
           qualityProfile: "high",
           spatialReference: {
-//            wkid: 4326 // GCS_WGS_1984
-            wkid: 3857 // WGS_1984_Web_Mercator_Auxiliary_Sphere
-//            wkid: 102100 // ditto deprecated
-//            wkid: 104903 // GCS_MOON_2000
+            wkid: 3857 
           },
           camera: {
             position: {
               x: 27.63423,
               y: -6.34466,
               z: 2500000,
-//              spatialReference: 4326
               spatialReference: 3857
-//              spatialReference: 102100
-//              spatialReference: 104903
             },
             heading: 332.28,
             tilt: 37.12
           },
+          alphaCompositingEnabled: true,
+          environment: {
+            background: {
+              type: "color", 
+              color: [0, 0, 0, 1]
+            },
+          starsEnabled: true,
+          atmosphereEnabled: false
+          }  
         });
 
         const cratersLayer = new FeatureLayer({
           portalItem: {
           id: "f763cfb37a214e4c9be3708093edc3c3",
           },
-
+          title: "Craters (Search layer)",
         });
 
         webmap.add(cratersLayer);
