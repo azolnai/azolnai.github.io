@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tile Service Viewer</title>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+<!-- Favorite Bookmark Icon -->
+<link rel="shortcut icon" type="image/ico" href="//www.esri.com/favicon.ico" />
+<link rel="icon" type="image/ico" href="//www.esri.com/favicon.ico" />
+<!-- End Favorite Bookmark Icon --> <link href="/tiles/static/esri-info.css" rel="stylesheet" type="text/css">
+<link href="//js.arcgis.com/4.18/esri/css/main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="//js.arcgis.com/4.18/"></script>
+<style>
+html,
+body,
+#viewDiv {padding: 0;margin: 0;height: 98%;width: 100%;}
+</style>
+<script type="text/javascript">
+require([
+"esri/config",
+"esri/Map",
+"esri/views/MapView",
+"esri/widgets/Home",
+"esri/layers/TileLayer",
+"esri/Viewpoint",
+"esri/core/urlUtils",
+"esri/identity/IdentityManager",
+"esri/config",
+"dojo/dom",
+"dojo/on",
+"dojo/cookie",
+"dojo/domReady!"
+], function(esriConfig, Map, MapView, Home, TileLayer, Viewpoint, UrlUtils, esriId, esriConfig, dom, on, cookie) {
+  esriConfig.apiKey = "AAPK241a4d654f654b78b375d8259b6c98b1YXZaHuI6I_71tr8-9pB0GNlJbxOQxTaK5kM7cxZAGooexraTh8txdzY8tnmPl6pn";
+        var map = new Map();
+        var view = new MapView({
+          container: "viewDiv",
+          map: map
+        });
+        var homeBtn = new Home({
+            view: view
+        });
+        view.ui.add(homeBtn, "top-left");
+        var layer = null,
+        urlObject = UrlUtils.urlToObject(window.location.href),
+        token = cookie("arcgis-tile-servers-prd0") || (urlObject && urlObject.query && urlObject.query.token),
+        cacheKey = (urlObject && urlObject.query && urlObject.query.cacheKey),
+        layerUrl = urlObject.path;
+        if (token == null){
+                  }
+        if (cacheKey == null){
+                      cacheKey = "cacheKey=8f6a1dccc2b838cb";
+                  }else{
+          cacheKey = "cacheKey=" + cacheKey;
+        }
+        if (token){
+          var credential= {
+           "server" : urlObject.path,
+           "token" : token
+          };
+          esriId.registerToken(credential);
+        }
+        if (cacheKey){
+          esriConfig.request.interceptors.push({
+            query: {
+          cacheKey: cacheKey.substring(cacheKey.indexOf("=")+1)
+            },
+            urls: layerUrl
+          });         }
+        layer = new TileLayer(layerUrl);
+        map.layers.add(layer);
+    });
+</script>
+</head>
+<body>
+<table id="navTable" style="width:100%">
+<tbody>
+<tr valign="top">
+<td id="breadcrumbs">Mars_basemap (MapServer)</td>
+<td align="right" id="help">Built using the <a target="sdkView" href="//developers.arcgis.com/javascript/">ArcGIS API for JavaScript</a></td>
+</tr>
+</tbody>
+</table>
+<div id="viewDiv"></div>
+</body>
+</html>
